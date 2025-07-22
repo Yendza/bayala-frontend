@@ -5,9 +5,6 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import useAuth from '../hooks/useAuth'
 
-
-
-
 export default function LoginPage() {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
@@ -25,7 +22,14 @@ export default function LoginPage() {
                 password,
             })
 
-            login({ username }, res.data.access)  // salva token e user no contexto
+            // Ajuste aqui se seu backend retornar user dentro de res.data.user
+            const user = {
+                id: res.data.user.id,
+                username: res.data.user.username,
+                email: res.data.user.email,
+            }
+
+            login(user, res.data.access)  // salva token e user no contexto
             router.push('/')
         } catch (err) {
             setError('Credenciais inválidas. Tente novamente.')

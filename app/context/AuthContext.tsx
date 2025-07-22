@@ -14,12 +14,14 @@ interface AuthContextType {
     isLoggedIn: boolean
     login: (user: User, token: string) => void
     logout: () => void
+    loading: boolean
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null)
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const accessToken = localStorage.getItem('access')
@@ -44,7 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ user, isLoggedIn: !!user, login, logout }}>
+        <AuthContext.Provider value={{ user, isLoggedIn: !!user, login, logout, loading }}>
             {children}
         </AuthContext.Provider>
     )

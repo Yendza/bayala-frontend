@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import axiosClient from '@/lib/axiosClient'
-import html2pdf from 'html2pdf.js'
+// import html2pdf from 'html2pdf.js' // <-- REMOVA ou comente esta linha
 import * as XLSX from 'xlsx'
 
 interface Categoria {
@@ -39,8 +39,9 @@ export default function RelatorioStock() {
         .filter(item => filtroCategoria === '' || item.produto.categoria_nome === filtroCategoria)
         .sort((a, b) => a.produto.nome.localeCompare(b.produto.nome))
 
-    const exportarPDF = () => {
+    const exportarPDF = async () => {
         if (pdfRef.current) {
+            const html2pdf = (await import('html2pdf.js')).default
             const options = {
                 margin: 0.5,
                 filename: 'relatorio-stock.pdf',
@@ -73,10 +74,16 @@ export default function RelatorioStock() {
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-bold">Relatório de Stock</h1>
                 <div className="space-x-2">
-                    <button onClick={exportarPDF} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                    <button
+                        onClick={exportarPDF}
+                        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                    >
                         Exportar PDF
                     </button>
-                    <button onClick={exportarExcel} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    <button
+                        onClick={exportarExcel}
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    >
                         Exportar Excel
                     </button>
                 </div>
@@ -104,7 +111,10 @@ export default function RelatorioStock() {
                 </select>
             </div>
 
-            <div ref={pdfRef} className="bg-white p-6 rounded shadow border text-sm text-gray-800">
+            <div
+                ref={pdfRef}
+                className="bg-white p-6 rounded shadow border text-sm text-gray-800"
+            >
                 <div className="flex justify-between items-center mb-6">
                     <div>
                         <h2 className="text-xl font-bold">BAYALA - Sistema de Gestão</h2>
@@ -115,7 +125,9 @@ export default function RelatorioStock() {
                     <img src="/logo_empresa.png" alt="Logo" className="h-16" />
                 </div>
 
-                <h2 className="text-lg font-semibold text-center mb-4 underline">Relatório de Stock</h2>
+                <h2 className="text-lg font-semibold text-center mb-4 underline">
+                    Relatório de Stock
+                </h2>
 
                 <table className="w-full border border-gray-300 rounded mb-4 text-xs">
                     <thead className="bg-gray-100">
@@ -130,7 +142,11 @@ export default function RelatorioStock() {
                         {stockFiltrado.map((item, i) => (
                             <tr
                                 key={i}
-                                className={item.quantidade <= 5 ? 'bg-red-100 text-red-700 font-semibold' : ''}
+                                className={
+                                    item.quantidade <= 5
+                                        ? 'bg-red-100 text-red-700 font-semibold'
+                                        : ''
+                                }
                             >
                                 <td className="p-2 border">{item.produto.nome}</td>
                                 <td className="p-2 border">{item.quantidade}</td>
@@ -149,9 +165,7 @@ export default function RelatorioStock() {
                     </tbody>
                 </table>
 
-                <div className="text-right font-semibold mb-4">
-                    Total Geral de Stock: {totalStock}
-                </div>
+                <div className="text-right font-semibold mb-4">Total Geral de Stock: {totalStock}</div>
 
                 <div className="flex justify-between items-center mt-12 text-xs">
                     <p>Data de Emissão: {dataEmissao}</p>

@@ -1,3 +1,4 @@
+import axios from 'axios';  // Importa axios
 import axiosClient from '../lib/axiosClient' // ajusta o caminho se necessário
 
 const api = axios.create({

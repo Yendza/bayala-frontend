@@ -4,14 +4,33 @@ import { useEffect, useState, useMemo } from "react";
 import axiosClient from '@/lib/axiosClient'; // ajuste o caminho se necessário
 import { useRouter } from "next/navigation";
 
+interface Produto {
+    id: number;
+    nome: string;
+    categoria_nome: string;
+    preco_venda?: number;
+    preco_aluguer?: number;
+}
+
+interface Item {
+    produto: number | "";
+    quantidade: number;
+    tipo: "venda" | "aluguer";
+}
+
+interface Cliente {
+    nome_cliente: string;
+    nuit: string;
+    celular: string;
+}
+
 export default function NovaCotacao() {
     const router = useRouter();
 
-    const [produtos, setProdutos] = useState([]);
-    const [cliente, setCliente] = useState({ nome_cliente: "", nuit: "", celular: "" });
-    // filtrosProdutos controla o texto digitado em cada input de produto
-    const [filtrosProdutos, setFiltrosProdutos] = useState([""]);
-    const [itens, setItens] = useState([{ produto: "", quantidade: 1, tipo: "venda" }]);
+    const [produtos, setProdutos] = useState<Produto[]>([]);
+    const [cliente, setCliente] = useState<Cliente>({ nome_cliente: "", nuit: "", celular: "" });
+    const [filtrosProdutos, setFiltrosProdutos] = useState<string[]>([""]);
+    const [itens, setItens] = useState<Item[]>([{ produto: "", quantidade: 1, tipo: "venda" }]);
 
     useEffect(() => {
         axiosClient.get("/produtos-lista/")
@@ -19,17 +38,14 @@ export default function NovaCotacao() {
             .catch(err => console.error("Erro ao carregar produtos:", err));
     }, []);
 
-    const actualizarItem = (index, campo, valor) => {
+    // Função genérica para atualizar item com tipos corretos
+    const actualizarItem = <K extends keyof Item>(index: number, campo: K, valor: Item[K]) => {
         const novosItens = [...itens];
-        if (campo === "produto") {
-            valor = Number(valor);  // converte id do produto para número
-        }
         novosItens[index][campo] = valor;
         setItens(novosItens);
     };
 
-    // Atualiza filtro do input para mostrar autocomplete
-    const actualizarFiltroProduto = (index, valor) => {
+    const actualizarFiltroProduto = (index: number, valor: string) => {
         const novosFiltros = [...filtrosProdutos];
         novosFiltros[index] = valor;
         setFiltrosProdutos(novosFiltros);
@@ -40,13 +56,13 @@ export default function NovaCotacao() {
         setFiltrosProdutos([...filtrosProdutos, ""]);
     };
 
-    const removerItem = (index) => {
+    const removerItem = (index: number) => {
         setItens(itens.filter((_, i) => i !== index));
         setFiltrosProdutos(filtrosProdutos.filter((_, i) => i !== index));
     };
 
-    const calcularPrecoUnitario = (item) => {
-        const produtoObj = produtos.find(p => p.id.toString() === item.produto.toString());
+    const calcularPrecoUnitario = (item: Item) => {
+        const produtoObj = produtos.find(p => p.id === item.produto);
         if (!produtoObj) return 0;
 
         if (item.tipo === "venda") {
@@ -87,7 +103,6 @@ export default function NovaCotacao() {
                 }
             }
 
-            // Envia dados ao backend
             const response = await axiosClient.post("/cotacoes/", {
                 nome_cliente: cliente.nome_cliente,
                 nuit_cliente: cliente.nuit || null,
@@ -97,7 +112,7 @@ export default function NovaCotacao() {
 
             const id = response.data.id;
             router.push(`/cotacoes/factura/${id}`);
-        } catch (error) {
+        } catch (error: any) {
             console.error("Erro na cotação:", error.response?.data || error.message);
             const data = error.response?.data;
             if (data?.stock) {
@@ -140,21 +155,19 @@ export default function NovaCotacao() {
                 const precoUnitario = calcularPrecoUnitario(item);
                 const subtotalItem = precoUnitario * item.quantidade;
 
-                // Produtos filtrados para autocomplete (baseado no filtro do input)
                 const produtosFiltrados = filtrosProdutos[index]
                     ? produtos.filter(p => p.nome.toLowerCase().includes(filtrosProdutos[index].toLowerCase()))
                     : [];
 
                 return (
                     <div key={index} className="grid grid-cols-5 gap-4 mb-8 items-center relative">
-                        {/* Input com autocomplete */}
                         <div className="relative col-span-1.6">
                             <input
                                 type="text"
                                 value={filtrosProdutos[index] || ""}
                                 onChange={(e) => {
                                     actualizarFiltroProduto(index, e.target.value);
-                                    actualizarItem(index, "produto", "");
+                                    actualizarItem(index, "produto", "" as Item["produto"]); // limpar seleção produto
                                 }}
                                 placeholder="Produto"
                                 className="border p-2 w-full"
@@ -166,7 +179,7 @@ export default function NovaCotacao() {
                                             key={p.id}
                                             className="p-2 hover:bg-gray-100 cursor-pointer"
                                             onClick={() => {
-                                                actualizarFiltroProduto(index, ""); // limpa filtro para fechar lista
+                                                actualizarFiltroProduto(index, "");
                                                 actualizarItem(index, "produto", p.id);
                                             }}
                                         >
@@ -187,7 +200,7 @@ export default function NovaCotacao() {
 
                         <select
                             value={item.tipo}
-                            onChange={(e) => actualizarItem(index, "tipo", e.target.value)}
+                            onChange={(e) => actualizarItem(index, "tipo", e.target.value as "venda" | "aluguer")}
                             className="border p-2"
                         >
                             <option value="venda">Venda</option>

@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import axiosClient from '@/lib/axiosClient'
-import html2pdf from 'html2pdf.js'
-import * as XLSX from 'xlsx'
 
 interface Produto {
     id: number
@@ -35,10 +33,18 @@ export default function ListaEntradas() {
     const [filtroDataFim, setFiltroDataFim] = useState('')
     const pdfRef = useRef<HTMLDivElement>(null)
 
+    // Estados para as libs importadas dinamicamente
+    const [html2pdf, setHtml2pdf] = useState<any>(null)
+    const [XLSX, setXLSX] = useState<any>(null)
+
     useEffect(() => {
         axiosClient.get('/stock/entradas/').then(res => setEntradas(res.data))
         axiosClient.get('/produtos-lista/').then(res => setProdutos(res.data))
         axiosClient.get('/categorias/').then(res => setCategorias(res.data))
+
+        // Importa html2pdf e XLSX só no cliente
+        import('html2pdf.js').then(mod => setHtml2pdf(mod.default || mod))
+        import('xlsx').then(mod => setXLSX(mod))
     }, [])
 
     const entradasFiltradas = entradas.filter(e => {
@@ -56,8 +62,11 @@ export default function ListaEntradas() {
         )
     })
 
-
     const exportarPDF = () => {
+        if (!html2pdf) {
+            alert('A biblioteca PDF ainda está a carregar. Por favor, tente novamente em alguns segundos.')
+            return
+        }
         if (pdfRef.current) {
             const options = {
                 margin: 0.5,
@@ -71,6 +80,10 @@ export default function ListaEntradas() {
     }
 
     const exportarExcel = () => {
+        if (!XLSX) {
+            alert('A biblioteca Excel ainda está a carregar. Por favor, tente novamente em alguns segundos.')
+            return
+        }
         const data = entradasFiltradas.map(e => ({
             Produto: e.produto.nome,
             Categoria: e.produto.categoria,

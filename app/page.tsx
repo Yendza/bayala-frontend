@@ -5,6 +5,15 @@ import { useRouter } from 'next/navigation'
 import axiosClient from '../lib/axiosClient'
 import useAuth from './context/useAuth'
 
+interface AlertaStockAPI {
+  nome: string
+  quantidade_disponivel: number
+}
+
+interface Alerta {
+  nome: string
+  stock: number
+}
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -14,7 +23,7 @@ export default function DashboardPage() {
     transaccoes: 0,
     clientes: 0,
     produtos: 0,
-    alertas: [] as { nome: string; stock: number }[],
+    alertas: [] as Alerta[],
   })
 
   useEffect(() => {
@@ -25,18 +34,19 @@ export default function DashboardPage() {
 
     axiosClient.get('/dashboard/')
       .then(res => {
+        const alertasAPI: AlertaStockAPI[] = res.data.alertas_stock
+        const alertas: Alerta[] = alertasAPI.map(item => ({
+          nome: item.nome,
+          stock: item.quantidade_disponivel,
+        }))
         setDashboard({
           transaccoes: res.data.transaccoes,
           clientes: res.data.clientes,
           produtos: res.data.produtos,
-          alertas: res.data.alertas_stock.map(item => ({
-            nome: item.nome,
-            stock: item.quantidade_disponivel
-          }))
+          alertas,
         })
         setLoading(false)
       })
-
       .catch(err => {
         console.error('Erro ao carregar dashboard:', err)
         if (err.response?.status === 401) {
@@ -73,7 +83,7 @@ function Card({ titulo, valor }: { titulo: string; valor: number }) {
   )
 }
 
-function AlertasCard({ alertas = [] }: { alertas?: { nome: string; stock: number }[] }) {
+function AlertasCard({ alertas = [] }: { alertas?: Alerta[] }) {
   if (alertas.length === 0) {
     return (
       <div className="bg-white shadow rounded-xl p-8 border border-red-500 text-red-600 min-h-[180px] w-full">

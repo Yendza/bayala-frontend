@@ -6,9 +6,35 @@ import { useParams } from "next/navigation";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
+interface Produto {
+  nome?: string;
+  preco_venda?: number | null;
+  preco_aluguer?: number | null;
+}
+
+interface Item {
+  produto?: Produto | null;
+  tipo: string;
+  quantidade: number;
+}
+
+interface Cliente {
+  nome?: string;
+  nuit?: string;
+  celular?: string;
+}
+
+interface Transaccao {
+  id: number;
+  numero: string;
+  data: string;
+  cliente?: Cliente | null;
+  itens_detalhados?: Item[];
+}
+
 export default function FacturaPage() {
   const { id } = useParams();
-  const [transaccao, setTransaccao] = useState(null);
+  const [transaccao, setTransaccao] = useState<Transaccao | null>(null);
 
   useEffect(() => {
     axiosClient
@@ -30,7 +56,7 @@ export default function FacturaPage() {
     pdf.save(`factura-${id}.pdf`);
   };
 
-  const calcularPrecoUnitario = (item) => {
+  const calcularPrecoUnitario = (item: Item): number => {
     if (!item.produto) return 0;
     if (item.tipo === "venda") {
       return Number(item.produto.preco_venda ?? 0);

@@ -35,20 +35,21 @@ export default function NovaTransaccao() {
       .catch(() => setProdutos([]));
   }, []);
 
-  const actualizarItem = (index: number, campo: keyof Item, valor: any) => {
+  // Função atualizada com tipagem genérica para valor conforme a chave
+  function actualizarItem<K extends keyof Item>(index: number, campo: K, valor: Item[K]) {
     const novosItens = [...itens];
     if (campo === "produto") {
-      novosItens[index].produto = valor;
+      novosItens[index].produto = valor as number | null;
       const produtoSelecionado = produtos.find((p) => p.id === valor);
       novosItens[index].filtroProduto = produtoSelecionado ? produtoSelecionado.nome : "";
     } else if (campo === "filtroProduto") {
-      novosItens[index].filtroProduto = valor;
+      novosItens[index].filtroProduto = valor as string;
       novosItens[index].produto = null; // limpar seleção ao digitar
     } else {
       novosItens[index][campo] = valor;
     }
     setItens(novosItens);
-  };
+  }
 
   const adicionarItem = () => {
     setItens([...itens, { produto: null, filtroProduto: "", quantidade: 1, tipo: "venda" }]);
@@ -233,7 +234,7 @@ export default function NovaTransaccao() {
             {/* Tipo */}
             <select
               value={item.tipo}
-              onChange={(e) => actualizarItem(index, "tipo", e.target.value)}
+              onChange={(e) => actualizarItem(index, "tipo", e.target.value as "venda" | "aluguer")}
               className="border p-2"
             >
               <option value="venda">Venda</option>

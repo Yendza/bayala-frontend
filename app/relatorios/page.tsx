@@ -100,7 +100,7 @@ export default function RelatorioVendasCompleto() {
         return 'Todos os períodos'
     }
 
-    // Exportar Excel (mantém igual)
+    // Exportar Excel
     const exportToExcel = () => {
         const wb = XLSX.utils.book_new()
 
@@ -198,7 +198,9 @@ export default function RelatorioVendasCompleto() {
                 margin: { left: 14, right: 14 },
                 styles: { fontSize: 9 },
                 didDrawPage: (data) => {
-                    yPos = data.cursor.y + 10
+                    if (data.cursor) {
+                        yPos = data.cursor.y + 10
+                    }
                 },
             })
         }
