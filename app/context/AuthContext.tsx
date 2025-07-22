@@ -31,6 +31,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             })
                 .then(response => setUser(response.data))
                 .catch(() => setUser(null))
+                .finally(() => setLoading(false)) // <-- garante que sempre atualiza o estado
+        } else {
+            setLoading(false)
         }
     }, [])
 

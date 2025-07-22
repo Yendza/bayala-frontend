@@ -12,7 +12,7 @@ interface HeaderProps {
 
 export default function Header({ onToggleMenu }: HeaderProps) {
   const router = useRouter()
-  const { isLoggedIn, logout, loading, user } = useAuth() // user deve ter o nome do usuário
+  const { isLoggedIn, logout, loading, user } = useAuth()
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -22,11 +22,11 @@ export default function Header({ onToggleMenu }: HeaderProps) {
   }
 
   const handleChangePassword = () => {
-    router.push('/alterar-senha') // ou a rota correta para alteração de senha
+    router.push('/alterar-senha')
     setDropdownOpen(false)
   }
 
-  // Fecha dropdown clicando fora
+  // Fecha o dropdown ao clicar fora
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -39,7 +39,11 @@ export default function Header({ onToggleMenu }: HeaderProps) {
     }
   }, [])
 
+  // Se ainda está carregando a autenticação, não renderiza nada
   if (loading) return null
+
+  // Se o usuário não estiver logado, não mostra o Header
+  if (!isLoggedIn) return null
 
   return (
     <header className="bg-white shadow-md px-6 py-4 flex items-center justify-between fixed top-0 left-0 right-0 z-50">
@@ -48,48 +52,44 @@ export default function Header({ onToggleMenu }: HeaderProps) {
         <span className="text-2xl font-bold text-red-600">Bayala - Sistema de Gestão</span>
       </div>
 
-      {isLoggedIn && (
-        <div className="flex items-center gap-6 relative">
-          {onToggleMenu && (
-            <button
-              onClick={onToggleMenu}
-              className="text-gray-600 hover:text-gray-900 focus:outline-none"
-              aria-label="Toggle Menu"
-            >
-              <MdMenu size={28} />
-            </button>
+      <div className="flex items-center gap-6 relative">
+        {onToggleMenu && (
+          <button
+            onClick={onToggleMenu}
+            className="text-gray-600 hover:text-gray-900 focus:outline-none"
+            aria-label="Toggle Menu"
+          >
+            <MdMenu size={28} />
+          </button>
+        )}
+
+        {/* Nome do usuário e dropdown */}
+        <div ref={dropdownRef} className="relative">
+          <button
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="font-semibold text-gray-700 hover:text-gray-900 focus:outline-none"
+          >
+            Olá, {user?.username ?? 'Usuário'}
+          </button>
+
+          {dropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg z-50">
+              <button
+                onClick={handleChangePassword}
+                className="flex items-center gap-2 w-full px-4 py-2 hover:bg-blue-100 text-left text-gray-800 font-medium"
+              >
+                <MdSettings size={18} /> Alterar Senha
+              </button>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 w-full px-4 py-2 hover:bg-blue-100 text-left text-gray-800 font-medium"
+              >
+                <MdLogout size={18} /> Sair
+              </button>
+            </div>
           )}
-
-          {/* Nome do usuário e dropdown */}
-          <div ref={dropdownRef} className="relative">
-            <button
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="font-semibold text-gray-700 hover:text-gray-900 focus:outline-none"
-            >
-              Olá, {user?.username ?? 'Usuário'}
-            </button>
-
-
-            {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg z-50">
-                <button
-                  onClick={handleChangePassword}
-                  className="flex items-center gap-2 w-full px-4 py-2 hover:bg-blue-100 text-left text-gray-800 font-medium"
-                >
-                  <MdSettings size={18} /> Alterar Senha
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-2 w-full px-4 py-2 hover:bg-blue-100 text-left text-gray-800 font-medium"
-                >
-                  <MdLogout size={18} /> Sair
-                </button>
-              </div>
-            )}
-
-          </div>
         </div>
-      )}
+      </div>
     </header>
   )
 }
