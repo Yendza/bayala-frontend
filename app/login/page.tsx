@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import useAuth from '../hooks/useAuth'
+import api from '../../lib/api' // usamos agora a instância configurada
 
 export default function LoginPage() {
     const [username, setUsername] = useState('')
@@ -17,19 +17,18 @@ export default function LoginPage() {
         setError('')
 
         try {
-            const res = await axios.post('http://localhost:8000/api/token/', {
+            const res = await api.post('token/', {
                 username,
                 password,
             })
 
-            // Ajuste aqui se seu backend retornar user dentro de res.data.user
             const user = {
                 id: res.data.user.id,
                 username: res.data.user.username,
                 email: res.data.user.email,
             }
 
-            login(user, res.data.access)  // salva token e user no contexto
+            login(user, res.data.access)
             router.push('/')
         } catch (err) {
             setError('Credenciais inválidas. Tente novamente.')

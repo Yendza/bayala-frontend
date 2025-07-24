@@ -1,8 +1,13 @@
-import axios from 'axios';  // Importa axios
-import axiosClient from '../lib/axiosClient' // ajusta o caminho se necessário
+// lib/api.ts
+import axios from 'axios'
+
+const baseURL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:8000/api/' // durante desenvolvimento local
+    : 'https://bayala-backend-5.onrender.com/api/' // em produção no Render
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api/', // ou 127.0.0.1 se preferires
+  baseURL,
   withCredentials: false,
 })
 
