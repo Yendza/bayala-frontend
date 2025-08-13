@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import axiosClient from '@/lib/axiosClient'
+import api from '@/lib/api'
 import * as XLSX from 'xlsx'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
@@ -65,7 +65,7 @@ export default function RelatorioVendasCompleto() {
         if (tipoTransacao) params.append('tipo_transacao', tipoTransacao)
 
         try {
-            const res = await axiosClient.get(`/relatorios/vendas-completo/?${params.toString()}`)
+            const res = await api.get(`/relatorios/vendas-completo/?${params.toString()}`)
             const data = res.data
 
             setTotalReceita(data.total_receita || 0)

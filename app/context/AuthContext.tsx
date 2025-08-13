@@ -24,27 +24,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        const accessToken = localStorage.getItem('access')
+        const accessToken = localStorage.getItem('accessToken') // <-- chave unificada
         if (accessToken) {
-            axios.get('/api/usuario-logado/', {
-                headers: { Authorization: `Bearer ${accessToken}` },
-            })
+            axios
+                .get('/api/usuario-logado/', {
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                })
                 .then(response => setUser(response.data))
                 .catch(() => setUser(null))
-                .finally(() => setLoading(false)) // <-- garante que sempre atualiza o estado
+                .finally(() => setLoading(false))
         } else {
             setLoading(false)
         }
     }, [])
 
     const login = (user: User, token: string) => {
-        localStorage.setItem('access', token)
+        localStorage.setItem('accessToken', token)
         setUser(user)
     }
 
     const logout = () => {
-        localStorage.removeItem('access')
-        localStorage.removeItem('refresh')
+        localStorage.removeItem('accessToken')
         setUser(null)
     }
 

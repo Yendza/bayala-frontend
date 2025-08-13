@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import axiosClient from '@/lib/axiosClient'; // ajuste o caminho se necessário
+import api from '@/lib/api'; // ajuste o caminho se necessário
 import { useRouter } from "next/navigation";
 
 interface Produto {
@@ -33,7 +33,7 @@ export default function NovaCotacao() {
     const [itens, setItens] = useState<Item[]>([{ produto: "", quantidade: 1, tipo: "venda" }]);
 
     useEffect(() => {
-        axiosClient.get("/produtos-lista/")
+        api.get("/produtos-lista/")
             .then(res => setProdutos(res.data))
             .catch(err => console.error("Erro ao carregar produtos:", err));
     }, []);
@@ -103,7 +103,7 @@ export default function NovaCotacao() {
                 }
             }
 
-            const response = await axiosClient.post("/cotacoes/", {
+            const response = await api.post("/cotacoes/", {
                 nome_cliente: cliente.nome_cliente,
                 nuit_cliente: cliente.nuit || null,
                 celular_cliente: cliente.celular || null,

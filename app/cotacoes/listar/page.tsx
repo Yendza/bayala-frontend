@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import axiosClient from '@/lib/axiosClient';
+import api from '@/lib/api';
 import Link from 'next/link';
 
 interface Cotacao {
@@ -18,7 +18,7 @@ export default function ListaCotacoesPage() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        axiosClient.get('/cotacoes/')
+        api.get('/cotacoes/')
             .then(res => {
                 setCotacoes(res.data);
                 setLoading(false);

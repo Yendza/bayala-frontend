@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import axiosClient from '@/lib/axiosClient'
+import api from '@/lib/api'
 import Link from 'next/link'
 
 interface Produto {
@@ -50,7 +50,7 @@ export default function ListaTransaccoes() {
             if (dataInicio) params.append('data_inicio', dataInicio)
             if (dataFim) params.append('data_fim', dataFim)
 
-            const res = await axiosClient.get('/transaccoes/?' + params.toString())
+            const res = await api.get('/transaccoes/?' + params.toString())
             setTransaccoes(res.data)
         } catch (err: any) {
             setError('Erro ao buscar transacções')

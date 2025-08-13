@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import axiosClient from '@/lib/axiosClient'
+import api from '@/lib/api'
 import { useRouter } from 'next/navigation'
 
 type ProdutoFormProps = {
@@ -35,7 +35,7 @@ export default function ProdutoForm({ produtoId, dadosIniciais, onFinalizado }: 
   const [categorias, setCategorias] = useState<Categoria[]>([])
 
   useEffect(() => {
-    axiosClient.get('/categorias/')
+    api.get('/categorias/')
       .then(res => setCategorias(res.data))
       .catch(err => console.error('Erro ao carregar categorias:', err))
   }, [])
@@ -54,9 +54,9 @@ export default function ProdutoForm({ produtoId, dadosIniciais, onFinalizado }: 
 
     try {
       if (produtoId) {
-        await axiosClient.put(`/produtos/${produtoId}/`, produto)
+        await api.put(`/produtos/${produtoId}/`, produto)
       } else {
-        await axiosClient.post('/produtos/', produto)
+        await api.post('/produtos/', produto)
       }
 
       if (onFinalizado) {

@@ -3,7 +3,7 @@
 import withAuth from "@/lib/withAuth";
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import axiosClient from '@/lib/axiosClient' // caminho ajustado
+import api from '@/lib/api' // caminho ajustado
 import ProdutoForm from '@/app/components/ProdutoForm'
 
 type ProdutoData = {
@@ -21,7 +21,7 @@ function EditarProdutoPage() {
   const [produto, setProduto] = useState<ProdutoData | null>(null)
 
   useEffect(() => {
-    axiosClient.get(`/produtos/${id}/`)
+    api.get(`/produtos/${id}/`)
       .then(res => setProduto(res.data))
       .catch(err => console.error('Erro ao carregar produto:', err))
   }, [id])

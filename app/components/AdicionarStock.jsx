@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import axiosClient from '../lib/axiosClient' // ajusta o caminho se necessário
+import api from '../lib/api' // ajusta o caminho se necessário
 
 
 export default function AdicionarStock() {

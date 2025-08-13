@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import useAuth from '../hooks/useAuth'
-import api from '../../lib/api' // usamos agora a instância configurada
+import api from '@/lib/api'
 
 export default function LoginPage() {
     const [username, setUsername] = useState('')
@@ -17,18 +17,16 @@ export default function LoginPage() {
         setError('')
 
         try {
-            const res = await api.post('token/', {
-                username,
-                password,
-            })
+            const res = await api.post('/token/', { username, password })
 
-            const user = {
-                id: res.data.user.id,
-                username: res.data.user.username,
-                email: res.data.user.email,
+            const access = res.data.access
+            const user = res.data.user
+
+            if (!access || !user) {
+                throw new Error('Token ou usuário inválido')
             }
 
-            login(user, res.data.access)
+            login(user, access)
             router.push('/')
         } catch (err) {
             setError('Credenciais inválidas. Tente novamente.')

@@ -2,7 +2,7 @@
 
 import withAuth from "@/lib/withAuth"
 import { useEffect, useState } from 'react'
-import axiosClient from '@/lib/axiosClient'
+import api from '@/lib/api'
 import Link from 'next/link'
 
 type Produto = {
@@ -18,7 +18,7 @@ function ListaProdutos() {
   const [produtos, setProdutos] = useState<Produto[]>([])
 
   useEffect(() => {
-    axiosClient.get('/produtos/')
+    api.get('/produtos/')
       .then(response => setProdutos(response.data))
       .catch(error => console.error('Erro ao carregar produtos:', error))
   }, [])
@@ -28,7 +28,7 @@ function ListaProdutos() {
     if (!confirmar) return
 
     try {
-      await axiosClient.delete(`/produtos/${id}/`)
+      await api.delete(`/produtos/${id}/`)
       setProdutos(produtos.filter(p => p.id !== id))
     } catch (error) {
       console.error('Erro ao eliminar o produto:', error)

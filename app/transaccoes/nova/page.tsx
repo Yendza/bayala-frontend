@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import axiosClient from '@/lib/axiosClient'; // ajuste o caminho se necessário
+import api from '@/lib/api'; // ajuste o caminho se necessário
 import { useRouter } from "next/navigation";
 
 interface Produto {
@@ -30,7 +30,7 @@ export default function NovaTransaccao() {
   const [tipoPagamento, setTipoPagamento] = useState("numerario");
 
   useEffect(() => {
-    axiosClient.get("/produtos-lista/")
+    api.get("/produtos-lista/")
       .then((res) => setProdutos(res.data))
       .catch(() => setProdutos([]));
   }, []);
@@ -105,7 +105,7 @@ export default function NovaTransaccao() {
         }
 
         // Verifica stock real no backend
-        const resposta = await axiosClient.get('/stock/stock-disponivel/', {
+        const resposta = await api.get('/stock/stock-disponivel/', {
           params: { produto_id: item.produto }
         });
 
@@ -123,7 +123,7 @@ export default function NovaTransaccao() {
       }
 
       // Envia transação
-      const response = await axiosClient.post("/transaccoes/", {
+      const response = await api.post("/transaccoes/", {
         cliente,
         tipo_pagamento: tipoPagamento,
         itens: itens.map((item) => ({

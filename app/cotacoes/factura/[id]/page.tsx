@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import axiosClient from '@/lib/axiosClient';
+import api from '@/lib/api';
 import { useParams } from "next/navigation";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -33,7 +33,7 @@ export default function FacturaCotacaoPage() {
     const [cotacao, setCotacao] = useState<Cotacao | null>(null);
 
     useEffect(() => {
-        axiosClient
+        api
             .get(`/cotacoes/${id}/`)
             .then((res) => setCotacao(res.data))
             .catch((err) => console.error(err));

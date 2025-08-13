@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import axiosClient from '@/lib/axiosClient';
+import api from '@/lib/api';
 import { useParams } from "next/navigation";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -37,7 +37,7 @@ export default function FacturaPage() {
   const [transaccao, setTransaccao] = useState<Transaccao | null>(null);
 
   useEffect(() => {
-    axiosClient
+    api
       .get(`/transaccoes/${id}/`)
       .then((res) => setTransaccao(res.data))
       .catch((err) => console.error("Erro a carregar transacção:", err));

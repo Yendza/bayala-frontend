@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import axiosClient from '@/lib/axiosClient'
+import api from '@/lib/api'
 
 interface Produto {
     id: number
@@ -38,9 +38,9 @@ export default function ListaEntradas() {
     const [XLSX, setXLSX] = useState<any>(null)
 
     useEffect(() => {
-        axiosClient.get('/stock/entradas/').then(res => setEntradas(res.data))
-        axiosClient.get('/produtos-lista/').then(res => setProdutos(res.data))
-        axiosClient.get('/categorias/').then(res => setCategorias(res.data))
+        api.get('/stock/entradas/').then(res => setEntradas(res.data))
+        api.get('/produtos-lista/').then(res => setProdutos(res.data))
+        api.get('/categorias/').then(res => setCategorias(res.data))
 
         // Importa html2pdf e XLSX só no cliente
         import('html2pdf.js').then(mod => setHtml2pdf(mod.default || mod))

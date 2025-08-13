@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import axiosClient from '../lib/axiosClient'
+import api from '@/lib/api'
 import useAuth from './context/useAuth'
 
 interface AlertaStockAPI {
@@ -32,7 +32,7 @@ export default function DashboardPage() {
       return
     }
 
-    axiosClient.get('/dashboard/')
+    api.get('/dashboard/')
       .then(res => {
         const alertasAPI: AlertaStockAPI[] = res.data.alertas_stock
         const alertas: Alerta[] = alertasAPI.map(item => ({

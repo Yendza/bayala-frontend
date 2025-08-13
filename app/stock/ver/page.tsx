@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
-import axiosClient from '@/lib/axiosClient'
+import api from '@/lib/api'
 // import html2pdf from 'html2pdf.js' // <-- REMOVA ou comente esta linha
 import * as XLSX from 'xlsx'
 
@@ -30,8 +30,8 @@ export default function RelatorioStock() {
     const pdfRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        axiosClient.get('/stock/stock-agrupado/').then(res => setStock(res.data))
-        axiosClient.get('/categorias/').then(res => setCategorias(res.data))
+        api.get('/stock/stock-agrupado/').then(res => setStock(res.data))
+        api.get('/categorias/').then(res => setCategorias(res.data))
     }, [])
 
     const stockFiltrado = stock

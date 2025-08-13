@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import axiosClient from '@/lib/axiosClient'
+import api from '@/lib/api'
 import { useRouter } from 'next/navigation'
 
 interface Produto {
@@ -19,7 +19,7 @@ export default function AdicionarStockPage() {
     const [feedback, setFeedback] = useState<string | null>(null)
 
     useEffect(() => {
-        axiosClient.get('/produtos-lista/')
+        api.get('/produtos-lista/')
             .then(res => setProdutos(res.data))
             .catch(() => setProdutos([]))
     }, [])
@@ -37,7 +37,7 @@ export default function AdicionarStockPage() {
         }
 
         try {
-            await axiosClient.post('/stock/', {
+            await api.post('/stock/', {
                 produto_id: produtoSelecionado.id,
                 quantidade,
                 // estado removido aqui, conforme solicitado
