@@ -1,9 +1,8 @@
 'use client'
 
+import withAuth from '@/lib/withAuth'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import api from '@/lib/api'
-import useAuth from './context/useAuth'
 
 interface AlertaStockAPI {
   nome: string
@@ -15,9 +14,7 @@ interface Alerta {
   stock: number
 }
 
-export default function DashboardPage() {
-  const router = useRouter()
-  const { isLoggedIn, logout } = useAuth()
+function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [dashboard, setDashboard] = useState({
     transaccoes: 0,
@@ -27,11 +24,6 @@ export default function DashboardPage() {
   })
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      router.push('/login')
-      return
-    }
-
     api.get('/dashboard/')
       .then(res => {
         const alertasAPI: AlertaStockAPI[] = res.data.alertas_stock
@@ -49,16 +41,10 @@ export default function DashboardPage() {
       })
       .catch(err => {
         console.error('Erro ao carregar dashboard:', err)
-        if (err.response?.status === 401) {
-          logout()
-          router.push('/login')
-        }
       })
-  }, [isLoggedIn, logout, router])
+  }, [])
 
-  if (loading) {
-    return <p>Carregando...</p>
-  }
+  if (loading) return <p>Carregando...</p>
 
   return (
     <div className="p-6">
@@ -106,3 +92,5 @@ function AlertasCard({ alertas = [] }: { alertas?: Alerta[] }) {
     </div>
   )
 }
+
+export default withAuth(DashboardPage)
