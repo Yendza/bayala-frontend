@@ -6,20 +6,22 @@ import { useRouter } from "next/navigation";
 export default function withAuth(Component: React.FC) {
   return function ProtectedComponent(props: any) {
     const router = useRouter();
-    const [authorized, setAuthorized] = useState<boolean | null>(null);
+    const [authorized, setAuthorized] = useState<boolean | null>(null); // null = ainda não checou
 
     useEffect(() => {
+      if (typeof window === "undefined") return;
+
       const token = localStorage.getItem("accessToken");
       if (!token) {
-        router.replace("/login");
+        router.replace("/login"); // redireciona se não tiver token
       } else {
-        setAuthorized(true);
+        setAuthorized(true); // permite renderizar o componente
       }
     }, [router]);
 
-    if (authorized === null) return <p>Carregando...</p>; // ainda não checou
-    if (!authorized) return null; // redirecionando
+    // Enquanto não verificou, mostra loader
+    if (authorized === null) return <p>Carregando...</p>;
 
-    return <Component {...props} />;
+    return authorized ? <Component {...props} /> : null;
   };
 }
