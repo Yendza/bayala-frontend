@@ -7,7 +7,7 @@ const baseURL =
 
 const api = axios.create({
   baseURL,
-  withCredentials: false,
+  withCredentials: false, // se o backend não usar cookies
 })
 
 // Interceptor para incluir o token JWT em todas as requisições
@@ -32,10 +32,12 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response) {
-      console.error(
-        `Erro ${error.response.status}:`,
-        error.response.data
-      )
+      // Redireciona para login se 401
+      if (error.response.status === 401 && typeof window !== 'undefined') {
+        localStorage.removeItem('accessToken')
+        window.location.href = '/login'
+      }
+      console.error(`Erro ${error.response.status}:`, error.response.data)
     } else {
       console.error('Erro desconhecido:', error)
     }
