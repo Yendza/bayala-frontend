@@ -181,7 +181,7 @@ export default function NovaTransaccao() {
           <option value="mpesa">M-Pesa</option>
           <option value="emola">E-Mola</option>
           <option value="cheque">Cheque</option>
-          <option value="cheque">Transferência bancária</option>
+          <option value="transferencia">Transferência bancária</option>
         </select>
       </div>
 
