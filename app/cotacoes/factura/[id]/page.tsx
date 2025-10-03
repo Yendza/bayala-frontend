@@ -42,7 +42,11 @@ export default function FacturaCotacaoPage() {
     const exportarPDF = async () => {
         const input = document.getElementById("factura-oficial");
         if (!input) return;
-        const canvas = await html2canvas(input);
+        const canvas = await html2canvas(input, {
+            scale: 2, // aumenta a resolução
+            backgroundColor: "#ffffff", // força fundo branco
+            useCORS: true,
+          });
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF();
         const imgProps = pdf.getImageProperties(imgData);
