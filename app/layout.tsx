@@ -4,8 +4,8 @@ import LayoutClient from './components/LayoutClient'
 import { AuthProvider } from './context/AuthContext'
 
 export const metadata = {
-  title: 'Bayala',
-  description: 'Sistema de Gestão de Stock',
+  title: 'Controller',
+  description: 'Sistema de Gestão',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
