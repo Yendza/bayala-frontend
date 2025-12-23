@@ -49,7 +49,7 @@ export default function Header({ onToggleMenu }: HeaderProps) {
     <header className="bg-white shadow-md px-6 py-4 flex items-center justify-between fixed top-0 left-0 right-0 z-50">
       <div className="flex items-center gap-3">
         <Image src="/logo.png" alt="Logo" width={32} height={32} />
-        <span className="text-2xl font-bold text-red-600">Controller - Sistema de Gestão</span>
+        <span className="text-2xl font-bold text-blue-600">Controller - Sistema de Gestão</span>
       </div>
 
       <div className="flex items-center gap-6 relative">
