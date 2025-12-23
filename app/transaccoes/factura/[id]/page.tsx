@@ -84,10 +84,10 @@ export default function FacturaPage() {
         <div className="flex justify-between mb-6">
           <div>
             <img src="/logo_empresa.png" alt="Logotipo" className="h-16 mb-2" />
-            <p>NUIT: 400549109</p>
-            <p>Celular: 84/87 4221350</p>
-            <p>Av. Maguiguana, Maputo</p>
-            <p>Email: bayala@bayala.co.mz</p>
+            <p>NUIT: </p>
+            <p>Celular: </p>
+            <p>Av. </p>
+            <p>Email: </p>
           </div>
           <div className="text-right">
             <p><strong>Factura Nº:</strong> {transaccao.numero}</p>
