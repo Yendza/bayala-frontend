@@ -37,7 +37,7 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="bg-white p-8 rounded shadow-md w-full max-w-sm">
-                <h1 className="text-2xl font-bold mb-6 text-center text-red-600">Login - Bayala</h1>
+                <h1 className="text-2xl font-bold mb-6 text-center text-blue-600">Login - Controller</1>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <input
@@ -61,7 +61,7 @@ export default function LoginPage() {
 
                     <button
                         type="submit"
-                        className="bg-red-600 text-white py-2 rounded hover:bg-red-700 font-semibold"
+                        className="bg-blue-600 text-white py-2 rounded hover:bg-red-700 font-semibold"
                     >
                         Entrar
                     </button>
